@@ -587,6 +587,18 @@ def main():
     logger.info(f"[DEBUG] DINGTALK_APP_SECRET from env: {'YES len=' + str(len(env_secret)) if env_secret else 'NOT SET'}")
     logger.info(f"[DEBUG] Final AppKey: {DINGTALK_APP_KEY[:8]}... (len={len(DINGTALK_APP_KEY)})")
     logger.info(f"[DEBUG] Final AppSecret: {'***' + DINGTALK_APP_SECRET[-4:] if DINGTALK_APP_SECRET else 'EMPTY'} (len={len(DINGTALK_APP_SECRET)})")
+
+    # 调试：验证凭证是否能通过 token API
+    try:
+        import requests as req
+        token_resp = req.post('https://api.dingtalk.com/v1.0/oauth2/accessToken', json={
+            'appKey': DINGTALK_APP_KEY,
+            'appSecret': DINGTALK_APP_SECRET
+        })
+        logger.info(f"[DEBUG] Token API status: {token_resp.status_code}, response: {token_resp.text[:200]}")
+    except Exception as e:
+        logger.error(f"[DEBUG] Token API failed: {e}")
+
     logger.info("=" * 50)
 
     # 启动健康检查服务（后台线程）
