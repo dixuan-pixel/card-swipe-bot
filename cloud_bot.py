@@ -580,6 +580,13 @@ def main():
     logger.info("刷卡群数据统计员 - 云端版启动")
     logger.info(f"目标群: {TARGET_CONVERSATION_TITLE}")
     logger.info(f"健康检查端口: {HEALTH_PORT}")
+    # 调试：打印环境变量状态（只显示前几位，不泄露完整密钥）
+    env_key = os.environ.get("DINGTALK_APP_KEY", "")
+    env_secret = os.environ.get("DINGTALK_APP_SECRET", "")
+    logger.info(f"[DEBUG] DINGTALK_APP_KEY from env: {'YES len=' + str(len(env_key)) + ' prefix=' + env_key[:8] if env_key else 'NOT SET'}")
+    logger.info(f"[DEBUG] DINGTALK_APP_SECRET from env: {'YES len=' + str(len(env_secret)) if env_secret else 'NOT SET'}")
+    logger.info(f"[DEBUG] Final AppKey: {DINGTALK_APP_KEY[:8]}... (len={len(DINGTALK_APP_KEY)})")
+    logger.info(f"[DEBUG] Final AppSecret: {'***' + DINGTALK_APP_SECRET[-4:] if DINGTALK_APP_SECRET else 'EMPTY'} (len={len(DINGTALK_APP_SECRET)})")
     logger.info("=" * 50)
 
     # 启动健康检查服务（后台线程）
