@@ -596,8 +596,21 @@ def main():
             'appSecret': DINGTALK_APP_SECRET
         })
         logger.info(f"[DEBUG] Token API status: {token_resp.status_code}, response: {token_resp.text[:200]}")
+
+        # 直接用 requests 模拟 Stream 连接请求
+        stream_resp = req.post(
+            'https://api.dingtalk.com/v1.0/gateway/connections/open',
+            headers={'Content-Type': 'application/json', 'Accept': 'application/json'},
+            json={
+                'clientId': DINGTALK_APP_KEY,
+                'clientSecret': DINGTALK_APP_SECRET,
+                'subscriptions': [{'type': 'CALLBACK', 'topic': '/v1.0/im/bot/messages/get'}],
+                'ua': 'dingtalk-sdk-python/v0.24.3-union',
+            }
+        )
+        logger.info(f"[DEBUG] Stream API status: {stream_resp.status_code}, response: {stream_resp.text[:300]}")
     except Exception as e:
-        logger.error(f"[DEBUG] Token API failed: {e}")
+        logger.error(f"[DEBUG] API check failed: {e}")
 
     logger.info("=" * 50)
 
