@@ -485,7 +485,11 @@ class CardSwipeHandler(dingtalk_stream.ChatbotHandler):
             if msg.text and hasattr(msg.text, 'content'):
                 text_content = msg.text.content or ""
 
+            # 调试：打印所有收到的消息（在过滤之前）
+            logger.info(f"[DEBUG] 收到原始消息: type={message_type}, conv_id={conversation_id[:30] if conversation_id else 'EMPTY'}, conv_title={conversation_title or 'EMPTY'}, sender={sender_nick}, text={text_content[:100] if text_content else 'EMPTY'}")
+
             if not text_content.strip():
+                logger.info("[DEBUG] 消息内容为空，跳过")
                 return AckMessage.STATUS_OK, 'success'
 
             # 过滤：只处理目标群消息
@@ -498,6 +502,7 @@ class CardSwipeHandler(dingtalk_stream.ChatbotHandler):
                 is_target = True
 
             if not is_target:
+                logger.info(f"[DEBUG] 非目标群消息，跳过 (target_id={TARGET_CONVERSATION_ID[:20] if TARGET_CONVERSATION_ID else 'EMPTY'}, target_title={TARGET_CONVERSATION_TITLE})")
                 return AckMessage.STATUS_OK, 'success'
 
             # 过滤：机器人自己发的消息不处理
